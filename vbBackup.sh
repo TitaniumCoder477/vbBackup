@@ -670,11 +670,13 @@ echo
 				
 			;;
 			l) #View license agreement
+			
 				echo
 				more LICENSE
 				echo
 				echo "(Press Enter to return)"
 				read
+				
 			;;
 			q) #Quit
 			
