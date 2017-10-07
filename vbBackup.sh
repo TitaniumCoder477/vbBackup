@@ -33,11 +33,11 @@ echo
 		echo
 		
 		case "$VMOPT" in
-			1) echo "  (1) Set source(s).........all VMs" ;;
-			2) echo "  (1) Set source(s).........all that are powered off" ;;
+			1) echo "  (1) Set source(s).........All VMs" ;;
+			2) echo "  (1) Set source(s).........All that are powered off" ;;
 			3) echo "  (1) Set source(s).........vbBackupList.txt" ;;
-			4) echo "  (1) Set source(s).........last attempt, failed" ;;
-			5) echo "  (1) Set source(s).........specific VM = ${SPECVM}" ;;
+			4) echo "  (1) Set source(s).........Last attempt, failed" ;;
+			5) echo "  (1) Set source(s).........Specific VM = ${SPECVM}" ;;
 		esac
 		
 		echo "  (2) Set destination.......${DST}"
