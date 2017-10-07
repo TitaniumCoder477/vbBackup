@@ -36,7 +36,7 @@ echo
 			1) echo "  (1) Set source(s).........all VMs" ;;
 			2) echo "  (1) Set source(s).........all that are powered off" ;;
 			3) echo "  (1) Set source(s).........vbBackupList.txt" ;;
-			4) echo "  (1) Set source(s).........last attempt, failed/skipped" ;;
+			4) echo "  (1) Set source(s).........last attempt, failed" ;;
 			5) echo "  (1) Set source(s).........specific VM = ${SPECVM}" ;;
 		esac
 		
@@ -78,7 +78,7 @@ echo
 					echo "  (1) All VMs"
 					echo "  (2) All that are powered off"
 					echo "  (3) vbBackupList.txt"
-					echo "  (4) Last attempt, failed/skipped"
+					echo "  (4) Last attempt, failed"
 					echo "  (5) Specific VM"
 					echo
 					echo "  (b) Return"
@@ -98,7 +98,7 @@ echo
 							let VMOPT=3
 							let ENDLOOP-=1
 						;;
-						4) #Last attempt, failed/skipped
+						4) #Last attempt, failed
 							let VMOPT=4
 							let ENDLOOP-=1
 						;;
@@ -202,8 +202,8 @@ echo
 								else									
 									if [ $STOP -eq 1 ]; then
 										# LOGGING
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is on. Stopping it prior to backup..." | cat >> "${RESULTS}"	
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is on. Stopping it prior to backup..."
+										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Stopping it prior to backup..." | cat >> "${RESULTS}"	
+										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Stopping it prior to backup..."
 										/usr/bin/VBoxManage controlvm "${vmname}" savestate	
 										
 										DATE=`date +%Y%m%d-%H%M%S`
@@ -241,8 +241,8 @@ echo
 										fi
 
 										# LOGGING
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..."
+										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was running prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
+										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was running prior to backup. Starting it up again..."
 										/usr/bin/VBoxManage startvm "${vmname}" --type headless
 									else
 										# LOGGING
@@ -326,56 +326,10 @@ echo
 										echo "${vmname}" | cat >> "${FAIL}"	
 									fi
 								else									
-									if [ $STOP -eq 1 ]; then
-										# LOGGING
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is on. Stopping it prior to backup..." | cat >> "${RESULTS}"	
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is on. Stopping it prior to backup..."
-										/usr/bin/VBoxManage controlvm "${vmname}" savestate	
-										
-										DATE=`date +%Y%m%d-%H%M%S`
-										ODIR="${DST}/${vmname}"									
-										OFILE="${ODIR}/${DATE}_${vmname}.ova"
-										mkdir "${ODIR}"
-									
-										vboxmanage export "${vmname}" -o "${OFILE}"
-										RESULT=$?
-										if [ $RESULT -eq 0 ]; then
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Success" | cat >> "${RESULTS}"
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Success"
-											echo "${vmname}" | cat >> "${SUCCESS}"
-											FILESIZE=$(stat -c%s "${OFILE}")
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | File size = $FILESIZE" | cat >> "${RESULTS}"
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | File size = $FILESIZE"
-										
-											if [ $COMP -eq 1 ]; then										
-												tar czvf "${OFILE}.tar.gz" "${OFILE}"
-												RESULT=$?
-												if [ $RESULT -eq 0 ]; then
-													echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Successfully compressed" | cat >> "${RESULTS}"	
-													echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Successfully compressed"
-													rm "${OFILE}"
-													FILESIZE=$(stat -c%s "${OFILE}.tar.gz")
-													echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Compressed file size = $FILESIZE" | cat >> "${RESULTS}"
-													echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Compressed file size = $FILESIZE"
-												fi
-											fi
-										
-										else
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Fail" | cat >> "${RESULTS}"	
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Fail"
-											echo "${vmname}" | cat >> "${FAIL}"	
-										fi
-
-										# LOGGING
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..."
-										/usr/bin/VBoxManage startvm "${vmname}" --type headless
-									else
-										# LOGGING
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Skipping..." | cat >> "${RESULTS}"
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Skipping..."
-										echo "${vmname}" | cat >> "${RESULTS}"	
-									fi
+									# LOGGING
+									echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Skipping..." | cat >> "${RESULTS}"
+									echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Skipping..."
+									echo "${vmname}" | cat >> "${RESULTS}"	
 								fi							
 							done
 							
@@ -454,8 +408,8 @@ echo
 									else
 										if [ $STOP -eq 1 ]; then
 											# LOGGING
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is on. Stopping it prior to backup..." | cat >> "${RESULTS}"	
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is on. Stopping it prior to backup..."
+											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Stopping it prior to backup..." | cat >> "${RESULTS}"	
+											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Stopping it prior to backup..."
 											/usr/bin/VBoxManage controlvm "${vmname}" savestate					
 
 											DATE=`date +%Y%m%d-%H%M%S`
@@ -493,8 +447,8 @@ echo
 											fi
 
 											# LOGGING
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..."
+											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was running prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
+											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was running prior to backup. Starting it up again..."
 											/usr/bin/VBoxManage startvm "${vmname}" --type headless
 										else
 											# LOGGING
@@ -525,7 +479,7 @@ echo
 							read
 						fi				
 					;;
-					4) #Last attempt, failed/skipped
+					4) #Last attempt, failed
 					
 						if [ -n "${FAIL}" ]; then
 						
@@ -538,8 +492,8 @@ echo
 								rm "${FAIL}"								
 
 								# LOGGING
-								echo "`date +%Y%m%d-%H%M%S` | *** NEW BACKUP RUN *** | Last attempt, failed/skipped" | cat >> "${RESULTS}"	
-								echo "`date +%Y%m%d-%H%M%S` | *** NEW BACKUP RUN *** | Last attempt, failed/skipped"
+								echo "`date +%Y%m%d-%H%M%S` | *** NEW BACKUP RUN *** | Last attempt, failed" | cat >> "${RESULTS}"	
+								echo "`date +%Y%m%d-%H%M%S` | *** NEW BACKUP RUN *** | Last attempt, failed"
 
 								while read -r vmname ; 
 								do 
@@ -587,8 +541,8 @@ echo
 									else
 										if [ $STOP -eq 1 ]; then
 											# LOGGING
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is off. Stopping it prior to backup..." | cat >> "${RESULTS}"	
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is off. Stopping it prior to backup..."
+											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Stopping it prior to backup..." | cat >> "${RESULTS}"	
+											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Stopping it prior to backup..."
 											/usr/bin/VBoxManage controlvm "${vmname}" savestate			
 											
 											DATE=`date +%Y%m%d-%H%M%S`
@@ -626,8 +580,8 @@ echo
 											fi
 
 											# LOGGING
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
-											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..."
+											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was running prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
+											echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was running prior to backup. Starting it up again..."
 											/usr/bin/VBoxManage startvm "${vmname}" --type headless
 										else
 											# LOGGING
@@ -718,8 +672,8 @@ echo
 							else
 								if [ $STOP -eq 1 ]; then
 									# LOGGING
-									echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is off. Stopping it prior to backup..." | cat >> "${RESULTS}"	
-									echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is off. Stopping it prior to backup..."
+									echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Stopping it prior to backup..." | cat >> "${RESULTS}"	
+									echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM is running. Stopping it prior to backup..."
 									/usr/bin/VBoxManage controlvm "${vmname}" savestate			
 
 									DATE=`date +%Y%m%d-%H%M%S`
@@ -751,8 +705,8 @@ echo
 										fi
 
 										# LOGGING
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
-										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was on prior to backup. Starting it up again..."
+										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was running prior to backup. Starting it up again..." | cat >> "${RESULTS}"	
+										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | This VM was running prior to backup. Starting it up again..."
 										/usr/bin/VBoxManage startvm "${vmname}" --type headless	
 									else
 										echo "`date +%Y%m%d-%H%M%S` | ${vmname} | Fail" | cat >> "${RESULTS}"	
