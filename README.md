@@ -5,7 +5,7 @@ Thanks!
 
 TitaniumCoder477
 
-Latest download: https://github.com/TitaniumCoder477/
+Latest download: https://github.com/TitaniumCoder477/vbBackup/blob/master/vbBackup.sh
 
 Hints:
 - Create a vbBackupList.txt in the program folder and add your specific VMs there. Anything beginning with a # is skipped.
