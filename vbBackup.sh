@@ -662,8 +662,19 @@ echo
 				
 			;;
 			r) #Configure retention
+			
+				echo
+				echo "This feature is not implemented yet!"
+				echo "(Press Enter to return)"
+				read
+				
 			;;
 			l) #View license agreement
+				echo
+				more LICENSE
+				echo
+				echo "(Press Enter to return)"
+				read
 			;;
 			q) #Quit
 			
