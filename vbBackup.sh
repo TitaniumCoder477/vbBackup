@@ -159,7 +159,7 @@ main() {
 
 					echo "Type 0 to disable and 1 to enable compression: "
 					read COMP
-					if [ $COMP < 0 ] || [ $COMP > 1 ]; then
+					if [ $COMP -lt 0 ] || [ $COMP -gt 1 ]; then
 						let COMP=1
 					fi
 
@@ -168,7 +168,7 @@ main() {
 
 					echo "Type 0 to skip and 1 to stop-start: "
 					read STOP
-					if [ $STOP < 0 ] || [ $STOP > 1 ]; then
+					if [ $STOP -lt 0 ] || [ $STOP -gt 1 ]; then
 						let STOP=1
 					fi
 
